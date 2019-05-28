@@ -5,13 +5,20 @@
  import { select } from 'd3-selection';
  import _ from 'lodash';
  import mimir from 'mimir';
+ import sentiment from 'wink-sentiment';
+ import autocomplete from 'autocompleter';
+ import { onMount } from 'svelte';
+ import { scaleOrdinal } from 'd3-scale';
+ import {schemePaired} from 'd3-scale-chromatic';
+ var color = scaleOrdinal(schemePaired);
 
  const {tfidf, tokenize } = mimir;
  export let name;
- export let appId = '775737172';
+ let appId = '775737172';
  let promise = getReviews({appId:'775737172'});
  let gramOptions = _.range(1,6).map(x => x.toString());
  let gramOptionsValue = "2"
+ let reviewsSentiment = "0";
 
  const screenWidth = window.innerWidth;
  const screenHeight = window.innerHeight;
@@ -37,7 +44,8 @@
      .attr("transform", function(d) {
        return "translate(" + [d.x, d.y] + ")rotate(" + d.rotate + ")";
      })
-     .text(function(d) { return d.text; });
+     .text(function(d) { return d.text; })
+     .style("fill", function(d, i ) { return color(i); });
  }
 
  function calculateCloud(data) {
@@ -91,32 +99,61 @@
      .map(r => nGram(nGrams)(tokenize(r.content + r.title).filter(w=> !stopFilter.has(w))))
      .filter(tg => !isSuperset(appWords, new Set(tg)))
      .flat();
-
-   let allReviews = reviews.map(x=>tokenize(x.content).join(' '));
-
+   /* let allReviews = reviews.map(x=>tokenize(x.content).join(' ')); */
    /* let allReviewsText = r.reviews.map(x => tokenize(x.content)).flat(); */
    let counted = _.countBy(grams);
    let sorted  = _.sortBy(Object.keys(counted), o => counted[o] * -1 );
 
    let d3Text = [];
    sorted.slice(0,1000).forEach(s => {
-     /* console.log(s.split(',') + counted[s]); */
      let phrase = s.split(',').join(' ');
-
-     /* console.log(tfidf('foo', allReviewsText, allReviews)); */
-     d3Text.push({text: phrase, size:counted[s] * 3 });
+     d3Text.push({text: phrase, size: counted[s]*3 });
    });
    return d3Text;
  }
 
- function handleClick() {
+ function sentimentReviews({ reviews }) {
+   const sentiments = reviews.map(r => sentiment(r.title + r.content));
+   return _.meanBy(sentiments,'score');
+
+
+ }
+
+ function handleClick(e) {
    promise = getReviews({appId}).then(r=> {
      const d3Text = formatReviews({reviews: r, nGrams:parseInt(gramOptionsValue)});
      calculateCloud(d3Text);
+     reviewsSentiment = sentimentReviews({reviews:r}).toString();
    }).catch(console.log);
  }
 
  handleClick();
+
+ let appNames = []
+ onMount(async () => {
+
+   var input = document.getElementById("appSearch");
+
+   autocomplete({
+     input: input,
+     fetch: async function(text, update) {
+       text = text.toLowerCase();
+       let formattedText = encodeURI(text);
+       let res = await fetch(`https://cors.io/?https://itunes.apple.com/search?term=${formattedText}&entity=software`);
+       let apps = await res.json();
+
+       let formattedApps = apps.results.map(a => ({value: a.trackId, label: a.trackName}));
+       update(formattedApps);
+     },
+     onSelect: function(item) {
+       input.value = item.label;
+       console.log("selected");
+       appId = item.value;
+       handleClick();
+     }
+   });
+ });
+
 </script>
 
 <style>
@@ -126,19 +163,15 @@
 </style>
 
 <h1>App Reviews </h1>
-
+<h2>Average Sentiment: {reviewsSentiment} </h2>
 <button on:click={handleClick}>
   Get App Reviews
 </button>
 
-<input bind:value={appId}>
+<input id="appSearch" >
 
-<!-- {#await promise then value} -->
-<!-- <p>the value is {value}</p> -->
-<!-- {/await} -->
-
-  <select bind:value={gramOptionsValue}>
-
+<label for="gramSelect"> nGrams </label>
+<select class="gramSelect" bind:value={gramOptionsValue} on:change={handleClick}>
   {#each gramOptions as go}
   <option value={go}>{go}</option>
   {/each}
