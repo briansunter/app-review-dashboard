@@ -12,7 +12,10 @@
  import 'autocompleter/autocomplete.css';
 
  const color = scaleOrdinal(schemePaired);
- const {tfidf, tokenize } = mimir;
+ const {tokenize } = mimir;
+ const screenWidth = window.innerWidth;
+ const screenHeight = window.innerHeight;
+
  export let name;
  let appId = '775737172';
  let promise = getReviews({appId:'775737172'});
@@ -20,9 +23,8 @@
  let gramOptionsValue = "2"
  let reviewsSentiment = "0";
 
- const screenWidth = window.innerWidth;
- const screenHeight = window.innerHeight;
  const stopFilter = new Set(["ourselves", "hers", "between", "yourself", "but", "again", "there", "about", "once", "during", "out", "very", "having", "with", "they", "own", "an", "be", "some", "for", "do", "its", "yours", "such", "into", "of", "most", "itself", "other", "off", "is", "s", "am", "or", "who", "as", "from", "him", "each", "the", "themselves", "until", "below", "are", "we", "these", "your", "his", "through", "don", "nor", "me", "were", "her", "more", "himself", "this", "down", "should", "our", "their", "while", "above", "both", "up", "to", "ours", "had", "she", "all", "no", "when", "at", "any", "before", "them", "same", "and", "been", "have", "in", "will", "on", "does", "yourselves", "then", "that", "because", "what", "over", "why", "so", "can", "did", "not", "now", "under", "he", "you", "herself", "has", "just", "where", "too", "only", "myself", "which", "those", "i", "after", "few", "whom", "t", "being", "if", "theirs", "my", "against", "a", "by", "doing", "it", "how", "further", "was", "here", "than","it","m"]);
+
  const appWords = new Set([...stopFilter, "it","a","lot","of","i","used","tto","would","as","well","app","way","best","able","using","nice","thank","like","work","the","want","really","back","try","seems","could","see","use","one","also","get","need","cant","first","good","looking","trying","needs","last","old","doesn","much","new","great","ive","ve","easy","dont","change","bought","purchased"]);
 
  function drawCloud(words) {
@@ -62,26 +64,12 @@
  async function getReviews({appId}) {
    var reviews = [];
 
-   for (var page = 1; page < 10 ; page++) {
-     const res = await fetch(`https://itunes.apple.com/us/rss/customerreviews/id=${appId}/sortBy=mostRecent/page=${page}/json`);
-     if (res.ok) {
-       const jsonResponse = await res.json();
-       const entries =jsonResponse.feed.entry;
-       if (entries){
-         const convertedReviews = entries.map(r =>
-           ({rating:r["im:rating"].label,
-             title: r.title.label,
-             content:r.content.label}));
-
-         reviews.push(convertedReviews);
-       } else {
-         break;
-       }
-     } else {
-       throw new Error(jsonResponse);
-     }
-   }
-   return reviews.flat();
+   const reviewsResponse = await Promise.all(_.range(1,10).map(page => fetch(`https://itunes.apple.com/us/rss/customerreviews/id=${appId}/sortBy=mostRecent/page=${page}/json`).then(async r=> await r.json())));
+   return reviewsResponse.filter(r => r.feed && r.feed.entry).map(r=>
+     r.feed.entry.map(r =>
+       ({rating:r["im:rating"].label,
+         title: r.title.label,
+         content:r.content.label}))).flat();
  }
 
  function isSuperset(set, subset) {
@@ -164,7 +152,7 @@
   Get App Reviews
 </button>
 
-<input class "autoComplete" id="appSearch" >
+<input id="appSearch" >
 
 <label for="gramSelect"> nGrams </label>
 <select class="gramSelect" bind:value={gramOptionsValue} on:change={handleClick}>
