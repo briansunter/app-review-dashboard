@@ -22,6 +22,9 @@
  let gramOptions = _.range(1,6).map(x => x.toString());
  let gramOptionsValue = "2"
  let reviewsSentiment = "0";
+ let appName = "";
+ let appRating = "";
+ let appLink = "";
 
  const stopFilter = new Set(["ourselves", "hers", "between", "yourself", "but", "again", "there", "about", "once", "during", "out", "very", "having", "with", "they", "own", "an", "be", "some", "for", "do", "its", "yours", "such", "into", "of", "most", "itself", "other", "off", "is", "s", "am", "or", "who", "as", "from", "him", "each", "the", "themselves", "until", "below", "are", "we", "these", "your", "his", "through", "don", "nor", "me", "were", "her", "more", "himself", "this", "down", "should", "our", "their", "while", "above", "both", "up", "to", "ours", "had", "she", "all", "no", "when", "at", "any", "before", "them", "same", "and", "been", "have", "in", "will", "on", "does", "yourselves", "then", "that", "because", "what", "over", "why", "so", "can", "did", "not", "now", "under", "he", "you", "herself", "has", "just", "where", "too", "only", "myself", "which", "those", "i", "after", "few", "whom", "t", "being", "if", "theirs", "my", "against", "a", "by", "doing", "it", "how", "further", "was", "here", "than","it","m"]);
 
@@ -126,13 +129,15 @@
        let res = await fetch(`https://cors.io/?https://itunes.apple.com/search?term=${formattedText}&entity=software`);
        let apps = await res.json();
 
-       let formattedApps = apps.results.map(a => ({value: a.trackId, label: a.trackName}));
+       let formattedApps = apps.results.map(a => ({value: a.trackId, label: a.trackName, link: a.trackViewUrl}));
+
        update(formattedApps);
      },
      onSelect: function(item) {
        input.value = item.label;
-       console.log("selected");
        appId = item.value;
+       appName = item.label;
+       appLink = item.link;
        handleClick();
      }
    });
@@ -144,15 +149,25 @@
  h1 {
    color: purple;
  }
+ #appSearch {
+   width:100%;
+   height:40px;
+   font-size: 32pt;
+   padding: 5pt;
+ }
+
 </style>
+<div class="container">
 
+</div>
 <h1>App Reviews </h1>
-<h2>Average Sentiment: {reviewsSentiment} </h2>
-<button on:click={handleClick}>
-  Get App Reviews
-</button>
-
 <input id="appSearch" >
+
+<h2>Average Sentiment: {reviewsSentiment} </h2>
+<!-- <button on:click={handleClick}> -->
+<!-- Get App Reviews -->
+<!-- </button> -->
+
 
 <label for="gramSelect"> nGrams </label>
 <select class="gramSelect" bind:value={gramOptionsValue} on:change={handleClick}>
