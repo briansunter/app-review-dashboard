@@ -11,6 +11,7 @@
     "rollup-plugin-node-builtins": "^2.1.2",
     "rollup-plugin-node-globals": "^1.4.0",
     "rollup-plugin-node-resolve": "^4.2.3",
+    "rollup-plugin-postcss": "^2.0.3",
     "rollup-plugin-serve": "^1.0.1",
     "rollup-plugin-svelte": "^5.0.3",
     "rollup-plugin-terser": "^4.0.4",
@@ -24,10 +25,11 @@
     "start": "sirv public",
     "start:dev": "sirv public --dev --cors",
     "deploy": "gh-pages-deploy"
-
   },
-"gh-pages-deploy": {
-  "staticpath": "public", "noprompt":true},
+  "gh-pages-deploy": {
+    "staticpath": "public",
+    "noprompt": true
+  },
   "dependencies": {
     "autocompleter": "^4.0.2",
     "d3-cloud": "^1.2.5",

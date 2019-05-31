@@ -1,7 +1,6 @@
 <script>
  import cloud from 'd3-cloud';
  import  nGram from 'n-gram';
- const { trigram, bigram } = nGram;
  import { select } from 'd3-selection';
  import _ from 'lodash';
  import mimir from 'mimir';
@@ -9,9 +8,10 @@
  import autocomplete from 'autocompleter';
  import { onMount } from 'svelte';
  import { scaleOrdinal } from 'd3-scale';
- import {schemePaired} from 'd3-scale-chromatic';
- var color = scaleOrdinal(schemePaired);
+ import { schemePaired } from 'd3-scale-chromatic';
+ import 'autocompleter/autocomplete.css';
 
+ const color = scaleOrdinal(schemePaired);
  const {tfidf, tokenize } = mimir;
  export let name;
  let appId = '775737172';
@@ -93,14 +93,12 @@
    return true;
  }
 
-
  function formatReviews({ reviews, nGrams }) {
    let grams = reviews
      .map(r => nGram(nGrams)(tokenize(r.content + r.title).filter(w=> !stopFilter.has(w))))
      .filter(tg => !isSuperset(appWords, new Set(tg)))
      .flat();
-   /* let allReviews = reviews.map(x=>tokenize(x.content).join(' ')); */
-   /* let allReviewsText = r.reviews.map(x => tokenize(x.content)).flat(); */
+
    let counted = _.countBy(grams);
    let sorted  = _.sortBy(Object.keys(counted), o => counted[o] * -1 );
 
@@ -115,8 +113,6 @@
  function sentimentReviews({ reviews }) {
    const sentiments = reviews.map(r => sentiment(r.title + r.content));
    return _.meanBy(sentiments,'score');
-
-
  }
 
  function handleClick(e) {
@@ -168,7 +164,7 @@
   Get App Reviews
 </button>
 
-<input id="appSearch" >
+<input class "autoComplete" id="appSearch" >
 
 <label for="gramSelect"> nGrams </label>
 <select class="gramSelect" bind:value={gramOptionsValue} on:change={handleClick}>
