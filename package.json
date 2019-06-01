@@ -38,9 +38,9 @@
     "d3-scale-chromatic": "^1.3.3",
     "d3-selection": "^1.4.0",
     "lodash": "^4.17.11",
+    "material-dashboard": "^2.1.0",
     "mimir": "0.0.1",
     "n-gram": "^1.1.1",
-    "svelte-autocomplete": "0.0.4",
     "wink-sentiment": "^5.0.2"
   }
 }

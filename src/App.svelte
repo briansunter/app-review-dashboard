@@ -7,9 +7,11 @@
  import sentiment from 'wink-sentiment';
  import autocomplete from 'autocompleter';
  import { onMount } from 'svelte';
- import { scaleOrdinal } from 'd3-scale';
+ import { scaleLinear, scaleOrdinal } from 'd3-scale';
  import { schemePaired } from 'd3-scale-chromatic';
  import 'autocompleter/autocomplete.css';
+ import 'material-dashboard/assets/css/material-dashboard.css';
+ import 'material-dashboard/assets/css/bootstrap.min.css';
 
  const color = scaleOrdinal(schemePaired);
  const {tokenize } = mimir;
@@ -22,9 +24,14 @@
  let gramOptions = _.range(1,6).map(x => x.toString());
  let gramOptionsValue = "2"
  let reviewsSentiment = "0";
- let appName = "";
- let appRating = "";
- let appLink = "";
+ let appName = "iaWriter";
+ let appPrice = "$8.99";
+ let appRating = "4";
+ let appRatingCount = "1014";
+ let currentVersionRating = "4";
+ let currentVersionRatingCount = "1024";
+
+ let appLink = "https://itunes.apple.com/us/app/ia-writer/id775737172?mt=8&ign-mpt=uo%3D4";
 
  const stopFilter = new Set(["ourselves", "hers", "between", "yourself", "but", "again", "there", "about", "once", "during", "out", "very", "having", "with", "they", "own", "an", "be", "some", "for", "do", "its", "yours", "such", "into", "of", "most", "itself", "other", "off", "is", "s", "am", "or", "who", "as", "from", "him", "each", "the", "themselves", "until", "below", "are", "we", "these", "your", "his", "through", "don", "nor", "me", "were", "her", "more", "himself", "this", "down", "should", "our", "their", "while", "above", "both", "up", "to", "ours", "had", "she", "all", "no", "when", "at", "any", "before", "them", "same", "and", "been", "have", "in", "will", "on", "does", "yourselves", "then", "that", "because", "what", "over", "why", "so", "can", "did", "not", "now", "under", "he", "you", "herself", "has", "just", "where", "too", "only", "myself", "which", "those", "i", "after", "few", "whom", "t", "being", "if", "theirs", "my", "against", "a", "by", "doing", "it", "how", "further", "was", "here", "than","it","m"]);
 
@@ -54,13 +61,17 @@
  }
 
  function calculateCloud(data) {
+   const fontScale = scaleLinear()
+     .domain([0, 100])
+     .range([14, 200]);
+
    cloud()
      .size([screenWidth, screenHeight])
      .words(data)
      .padding(5)
      .rotate(function() { return ~~(Math.random() * 2) * 90; })
      .font("Impact")
-     .fontSize(function(d) { return d.size; })
+     .fontSize(function(d) { return  fontScale(d.size);})
      .on("end", drawCloud).start();
  }
 
@@ -96,7 +107,7 @@
    let d3Text = [];
    sorted.slice(0,1000).forEach(s => {
      let phrase = s.split(',').join(' ');
-     d3Text.push({text: phrase, size: counted[s]*3 });
+     d3Text.push({text: phrase, size: counted[s] });
    });
    return d3Text;
  }
@@ -129,7 +140,7 @@
        let res = await fetch(`https://cors.io/?https://itunes.apple.com/search?term=${formattedText}&entity=software`);
        let apps = await res.json();
 
-       let formattedApps = apps.results.map(a => ({value: a.trackId, label: a.trackName, link: a.trackViewUrl}));
+       let formattedApps = apps.results.map(a => ({value: a.trackId, label: a.trackName, link: a.trackViewUrl, currentVersionRatingCount: a.userRatingCountForCurrentVersion, currentVersionRating: a.averageUserRatingForCurrentVersion, appRating: a.averageUserRating, appRatingCount: a.userRatingCount, appPrice:a.formattedPrice}));
 
        update(formattedApps);
      },
@@ -137,7 +148,12 @@
        input.value = item.label;
        appId = item.value;
        appName = item.label;
+       appPrice = item.appPrice;
        appLink = item.link;
+       appRating = item.appRating;
+       appRatingCount = item.appRatingCount;
+       currentVersionRating = item.currentVersionRating;
+       currentVersionRatingCount = item.currentVersionRatingCount;
        handleClick();
      }
    });
@@ -146,34 +162,103 @@
 </script>
 
 <style>
- h1 {
-   color: purple;
+ .input-group {
+   padding: 5pt;
+   background-color: white;
  }
- #appSearch {
-   width:100%;
-   height:40px;
-   font-size: 32pt;
+
+ .gramSelect {
+   padding: 5pt;
+   padding-left:10pt;
+   padding-right:10pt;
+ }
+
+ .gramSelectLabel {
    padding: 5pt;
  }
-
 </style>
+
 <div class="container">
+  <div class="row">
+    <div class="container-fluid">
+      <div class="navbar-wrapper">
+        <h1 class="navbar-brand" href={appLink}> { appName } Dashboard</h1>
+      </div>
+      <form class="navbar-form">
+        <div class="input-group border">
+          <input id="appSearch" type="text" value="" class="form-control" placeholder="Search for an App...">
+          <label class="gramSelectLabel" for="gramSelect"> nGrams </label>
+          <select class="gramSelect" bind:value={gramOptionsValue} on:change={handleClick}>
+            {#each gramOptions as go}
+            <option value={go}>{go}</option>
+            {/each}
+          </select>
+        </div>
+      </form>
+    </div>
+  </div>
 
+  <div class="row">
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-header card-header-success card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">star</i>
+          </div>
+          <p class="card-category">Current Version</p>
+          <h3 class="card-title">{currentVersionRating}
+            <small>Stars</small>
+          </h3>
+        </div>
+        <div class="card-footer">
+          <p class="card-category"> Out of {currentVersionRatingCount} Reviews. </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-header card-header-warning card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">rate_review</i>
+          </div>
+          <p class="card-category">Average Rating</p>
+          <h3 class="card-title">{appRating}
+            <small>Stars</small>
+          </h3>
+        </div>
+        <div class="card-footer">
+          <p class="card-category"> Out of {appRatingCount} Reviews. </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-header card-header-success card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">sentiment_satisfied</i>
+          </div>
+          <p class="card-category">Sentiment</p>
+          <h3 class="card-title">{reviewsSentiment.substring(0,6)}</h3>
+        </div>
+        <div class="card-footer">
+          <p class="card-category"> Out of {appRatingCount} Reviews. </p>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-3 col-md-6 col-sm-6">
+      <div class="card card-stats">
+        <div class="card-header card-header-success card-header-icon">
+          <div class="card-icon">
+            <i class="material-icons">store</i>
+          </div>
+          <p class="card-category">{appName}</p>
+          <h3 class="card-title">{appPrice}</h3>
+        </div>
+        <div class="card-footer">
+          <a class="card-category" href={appLink}>Go to store </a>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-<h1>App Reviews </h1>
-<input id="appSearch" >
-
-<h2>Average Sentiment: {reviewsSentiment} </h2>
-<!-- <button on:click={handleClick}> -->
-<!-- Get App Reviews -->
-<!-- </button> -->
-
-
-<label for="gramSelect"> nGrams </label>
-<select class="gramSelect" bind:value={gramOptionsValue} on:change={handleClick}>
-  {#each gramOptions as go}
-  <option value={go}>{go}</option>
-  {/each}
-</select>
-
 <div id="cloud"> </div>
