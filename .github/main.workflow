@@ -13,4 +13,4 @@ action "Deploy to GitHub Pages" {
     FOLDER = "public"
   }
   secrets = ["ACCESS_TOKEN"]
-}
+} 
