@@ -34,7 +34,7 @@
      onSelect: function(item) {
        input.value = item.label;
        currentApp.set(apps[item.value]);
-       selectedApp(currentApp);
+       selectedApp(apps[item.value]);
      }
    });
  });

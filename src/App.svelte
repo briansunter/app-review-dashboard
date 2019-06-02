@@ -20,6 +20,11 @@
 </script>
 
 <style>
+ .navbar-brand {
+   font-size: 40pt;
+   margin-top: 20pt;
+   margin-bottom: 20pt;
+ }
  .input-group {
    padding: 5pt;
    background-color: white;
@@ -33,6 +38,9 @@
 
  .gramSelectLabel {
    padding: 5pt;
+ }
+ .card-stats {
+   height: 12vmax;
  }
 </style>
 
@@ -98,7 +106,7 @@
           <p class="card-category">Sentiment</p>
 
           {#await currentAppReviewsSentiment}
-          <h3 class="card-title">Loading Sentiment...</h3>
+          <h3 class="card-category">Loading...</h3>
           {:then value}
           <h3 class="card-title">{value.substring(0,6)}</h3>
           {:catch error}
@@ -128,7 +136,9 @@
 </div>
 
 {#await formattedReviews}
+<div class="container">
 <p>Loading Word Cloud...</p>
+</div>
 {:then value}
 <WordCloud words={value} />
 {:catch error}
