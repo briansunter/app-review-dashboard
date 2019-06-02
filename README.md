@@ -1,31 +1,14 @@
-*Psst — looking for a shareable component template? Go here --> [sveltejs/component-template](https://github.com/sveltejs/component-template)*
+# App Review Dashboard
+A frontend to show a tag cloud of ngrams based on app review. Also shows sentiment analysis. Made with svelte and d3.
 
----
-
-# svelte app
-
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template.
-
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
+![Screenshot of app review dashboard](docs/img/screenshot.png "Screenshot of app review dashboard")
 
 ```bash
-npx degit sveltejs/template svelte-app
-cd svelte-app
-```
-
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
-
-
-## Get started
-
-Install the dependencies...
-
-```bash
-cd svelte-app
+cd app-review-dashboard
 npm install
 ```
 
-...then start [Rollup](https://rollupjs.org):
+then start [Rollup](https://rollupjs.org):
 
 ```bash
 npm run dev
@@ -36,33 +19,6 @@ Navigate to [localhost:5000](http://localhost:5000). You should see your app run
 
 ## Deploying to the web
 
-### With [now](https://zeit.co/now)
-
-Install `now` if you haven't already:
-
 ```bash
-npm install -g now
-```
-
-Then, from within your project folder:
-
-```bash
-now
-```
-
-As an alternative, use the [Now desktop client](https://zeit.co/download) and simply drag the unzipped project folder to the taskbar icon.
-
-### With [surge](https://surge.sh/)
-
-Install `surge` if you haven't already:
-
-```bash
-npm install -g surge
-```
-
-Then, from within your project folder:
-
-```bash
-npm run build
-surge public
+npm run deploy
 ```
