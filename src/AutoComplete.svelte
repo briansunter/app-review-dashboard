@@ -1,10 +1,10 @@
 <script>
  import autocomplete from 'autocompleter';
- import _ from 'lodash';
+ import values from 'lodash/values';
+ import groupBy from 'lodash/groupBy';
+ import mapValues from 'lodash/mapValues';
  import { onMount } from 'svelte';
  import 'autocompleter/autocomplete.css';
- import 'material-dashboard/assets/css/material-dashboard.css';
- import 'material-dashboard/assets/css/bootstrap.min.css';
  import { currentApp } from './stores'
 
  let apps = {};
@@ -18,16 +18,16 @@
        text = text.toLowerCase();
        let formattedText = encodeURI(text);
 
-       let cacheApps = _.values(apps).map(a => ({value: a.id , label: a.name}));
+       let cacheApps = values(apps).map(a => ({value: a.id , label: a.name}));
        update(cacheApps);
 
        let res = await fetch(`https://cors.io/?https://itunes.apple.com/search?term=${formattedText}&entity=software`);
        let appsResponse = await res.json();
 
        let formattedApps = appsResponse.results.map(a=> ({id: a.trackId, name:a.trackName, link: a.trackViewUrl, currentVersionRatingCount: a.userRatingCountForCurrentVersion, currentVersionRating: a.averageUserRatingForCurrentVersion, appRating: a.averageUserRating, appRatingCount: a.userRatingCount, appPrice:a.formattedPrice}));
-       apps =  _.chain(formattedApps).groupBy('id').mapValues(x=>x[0]).value();
+       apps = mapValues(groupBy(formattedApps,'id'),x=>x[0]);
 
-       let labelApps = _.values(apps).map(a => ({value: a.id , label: a.name}));
+       let labelApps = values(apps).map(a => ({value: a.id , label: a.name}));
        update(labelApps);
      },
      onSelect: function(item) {

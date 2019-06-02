@@ -3,7 +3,7 @@
  import { select } from 'd3-selection';
  import { scaleLinear, scaleOrdinal } from 'd3-scale';
  import { schemePaired } from 'd3-scale-chromatic';
- import _ from 'lodash';
+ import isEqual  from 'lodash/isEqual';
  import { onMount } from 'svelte';
 
  const color = scaleOrdinal(schemePaired);
@@ -19,7 +19,7 @@
    calculateCloud(words);
  });
 
- $: if(! _.isEqual(words, lastWords)) {
+ $: if(! isEqual(words, lastWords)) {
    lastWords = words;
    calculateCloud(words);
  }

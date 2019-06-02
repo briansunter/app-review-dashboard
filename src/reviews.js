@@ -1,5 +1,8 @@
-import _ from 'lodash';
-import  nGram from 'n-gram';
+import range from 'lodash/range';
+import map from 'lodash/map';
+import countBy from 'lodash/countBy';
+import sortBy from 'lodash/sortBy';
+import nGram from 'n-gram';
 import { tokenize } from 'mimir';
 import sentiment from 'wink-sentiment';
 
@@ -10,7 +13,7 @@ const appWords = new Set([...stopFilter, "it","a","lot","of","i","used","tto","w
 async function getReviews({appId}) {
   var reviews = [];
 
-  const reviewsResponse = await Promise.all(_.range(1,10).map(page => fetch(`https://itunes.apple.com/us/rss/customerreviews/id=${appId}/sortBy=mostRecent/page=${page}/json`).then(async r=> await r.json())));
+  const reviewsResponse = await Promise.all(range(1,10).map(page => fetch(`https://itunes.apple.com/us/rss/customerreviews/id=${appId}/sortBy=mostRecent/page=${page}/json`).then(async r=> await r.json())));
   return reviewsResponse
     .filter(r => r.feed && r.feed.entry)
     .map(r=> r.feed.entry.map(r => ({rating:r["im:rating"].label, content:r.content.label})))
@@ -31,8 +34,8 @@ function formatReviews({ reviews, nGrams }) {
       .map(r => nGram(nGrams)(tokenize(r.content + r.title).filter(w=> !stopFilter.has(w))))
       .filter(tg => !isSuperset(appWords, new Set(tg)))
       .flat();
-  let counted = _.countBy(grams);
-  let sorted  = _.sortBy(Object.keys(counted), o => counted[o] * -1 );
+  let counted = countBy(grams);
+  let sorted  = sortBy(Object.keys(counted), o => counted[o] * -1 );
 
   let d3Text = [];
   sorted.slice(0,1000).forEach(s => {

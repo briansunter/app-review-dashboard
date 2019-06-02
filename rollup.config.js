@@ -4,6 +4,7 @@ import commonjs from 'rollup-plugin-commonjs';
 import livereload from 'rollup-plugin-livereload';
 import { terser } from 'rollup-plugin-terser';
 import postcss from 'rollup-plugin-postcss';
+// import visualizer from 'rollup-plugin-visualizer';
 
 const production = !process.env.ROLLUP_WATCH;
 function onwarn (warning, warn) {
@@ -20,9 +21,6 @@ export default {
     file: 'public/bundle.js'
   },
   plugins: [
-    postcss({
-      extensions: ['.css'],
-    }),
     svelte({
       // enable run-time checks when not in production
       dev: !production,
@@ -33,6 +31,12 @@ export default {
       }
     }),
 
+    postcss({
+      extensions: ['.css'],
+      extract: 'public/vendor.css',
+      minimize: production,
+
+    }),
     // If you have external dependencies installed from
     // npm, you'll most likely need these plugins. In
     // some cases you'll need additional configuration —

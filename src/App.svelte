@@ -1,13 +1,17 @@
 <script>
- import _ from 'lodash';
+ import range from 'lodash/range';
+ import meanBy from 'lodash/meanBy';
  import WordCloud from './WordCloud.svelte';
  import AutoComplete from './AutoComplete.svelte';
  import { currentApp } from './stores'
  import { getReviews, formatReviews, reviewsSentiment } from './reviews';
 
+ import 'material-dashboard/assets/css/material-dashboard.css';
+ import 'material-dashboard/assets/css/bootstrap.min.css';
+
  $: appReviews = getReviews({appId:$currentApp.id});
 
- let gramOptions = _.range(1,6).map(x => x.toString());
+ let gramOptions = range(1,6).map(x => x.toString());
 
  let gramOptionsValue = "2"
 
@@ -15,7 +19,7 @@
    .then(r=> formatReviews({reviews:r, nGrams: parseInt(gramOptionsValue)}))
 
  $: currentAppReviewsSentiment = appReviews
-   .then(reviews=>_.chain(reviews).map(reviewsSentiment).meanBy('score').value().toString());
+   .then(reviews=>meanBy(reviews.map(reviewsSentiment),'score'));
 
 </script>
 
@@ -42,6 +46,7 @@
  .card-stats {
    height: 12vmax;
  }
+
 </style>
 
 <div class="container">
@@ -108,7 +113,7 @@
           {#await currentAppReviewsSentiment}
           <h3 class="card-category">Loading...</h3>
           {:then value}
-          <h3 class="card-title">{value.substring(0,6)}</h3>
+          <h3 class="card-title">{value.toString().substring(0,6)}</h3>
           {:catch error}
           <p>Something went wrong: {error.message}</p>
           {/await}
