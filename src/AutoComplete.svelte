@@ -6,11 +6,12 @@
  import { onMount } from 'svelte';
  import 'autocompleter/autocomplete.css';
  import { navigate } from "svelte-routing";
+ import {appCache} from './stores';
 
  let apps = {};
  export let selectedApp = () => null;
 
- onMount(async () => {
+ onMount(() => {
    var input = document.getElementById("appSearch");
    autocomplete({
      input: input,
@@ -18,22 +19,19 @@
        text = text.toLowerCase();
        let formattedText = encodeURI(text);
 
-       let cacheApps = values(apps).map(a => ({value: a.id , label: a.name}));
-       update(cacheApps);
-
        let res = await fetch(`https://cors.io/?https://itunes.apple.com/search?term=${formattedText}&entity=software`);
        let appsResponse = await res.json();
 
        let formattedApps = appsResponse.results.map(a=> ({id: a.trackId, name:a.trackName, link: a.trackViewUrl, currentVersionRatingCount: a.userRatingCountForCurrentVersion, currentVersionRating: a.averageUserRatingForCurrentVersion, appRating: a.averageUserRating, appRatingCount: a.userRatingCount, appPrice:a.formattedPrice}));
-       apps = mapValues(groupBy(formattedApps,'id'),x=>x[0]);
-
-       let labelApps = values(apps).map(a => ({value: a.id , label: a.name, appRatingCount:a.appRatingCount}));
+       appCache.set({...$appCache , ...mapValues(groupBy(formattedApps,'id'),x=>x[0])});
+       let labelApps = values(formattedApps).map(a => ({value: a.id , label: a.name, appRatingCount:a.appRatingCount}));
        update(labelApps);
      },
      onSelect: function(item) {
        input.value = item.label;
        /* currentApp.set(apps[item.value]); */
-       selectedApp(apps[item.value]);
+       /* console.log(item.label); */
+       /* let fullApp = $appCache[item.value]; */
        navigate(`${item.value}`);
      }
    });
