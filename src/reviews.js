@@ -50,4 +50,12 @@ function reviewsSentiment(review) {
   return sentiment(review.title + review.content);
 }
 
-export  {getReviews, formatReviews, reviewsSentiment};
+async function getApp(appId) {
+  let appRes = await fetch(`https://cors.io/?https://itunes.apple.com/lookup?id=${appId}`);
+  let appJson = await appRes.json();
+  let resultJson = appJson.results[0];
+  return {id: resultJson.trackId, name:resultJson.trackName, link: resultJson.trackViewUrl, currentVersionRatingCount: resultJson.userRatingCountForCurrentVersion, currentVersionRating: resultJson.averageUserRatingForCurrentVersion, appRating: resultJson.averageUserRating, appRatingCount: resultJson.userRatingCount, appPrice:resultJson.formattedPrice};
+
+
+}
+export  {getApp, getReviews, formatReviews, reviewsSentiment};

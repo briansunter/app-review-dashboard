@@ -5,7 +5,7 @@
  import mapValues from 'lodash/mapValues';
  import { onMount } from 'svelte';
  import 'autocompleter/autocomplete.css';
- import { currentApp } from './stores'
+ import { navigate } from "svelte-routing";
 
  let apps = {};
  export let selectedApp = () => null;
@@ -32,8 +32,9 @@
      },
      onSelect: function(item) {
        input.value = item.label;
-       currentApp.set(apps[item.value]);
+       /* currentApp.set(apps[item.value]); */
        selectedApp(apps[item.value]);
+       navigate(`/${item.value}`);
      }
    });
  });
