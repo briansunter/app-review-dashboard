@@ -8,7 +8,6 @@
  import { currentApp } from './stores'
 
  let apps = {};
- /* export let currentApp = {}; */
  export let selectedApp = () => null;
 
  onMount(async () => {

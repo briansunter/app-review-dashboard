@@ -137,7 +137,7 @@
 
 {#await formattedReviews}
 <div class="container">
-<p>Loading Word Cloud...</p>
+  <p>Loading Word Cloud...</p>
 </div>
 {:then value}
 <WordCloud words={value} />

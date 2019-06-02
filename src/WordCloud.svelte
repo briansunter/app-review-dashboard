@@ -17,12 +17,12 @@
 
  onMount(async () => {
    calculateCloud(words);
-});
+ });
 
  $: if(! _.isEqual(words, lastWords)) {
-    lastWords = words;
-    calculateCloud(words);
-  }
+   lastWords = words;
+   calculateCloud(words);
+ }
 
  function drawCloud(input) {
    select("#cloud").selectAll("svg").remove();
