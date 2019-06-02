@@ -34,7 +34,7 @@
        input.value = item.label;
        /* currentApp.set(apps[item.value]); */
        selectedApp(apps[item.value]);
-       navigate(`/${item.value}`);
+       navigate(`${item.value}`);
      }
    });
  });
