@@ -53,17 +53,19 @@
   <div class="row">
     <div class="container-fluid">
       <div class="navbar-wrapper">
-        <h1 class="navbar-brand" href={$currentApp.appLink}>{ $currentApp.name } Dashboard</h1>
+        <h1 class="display-2" href={$currentApp.appLink}>{ $currentApp.name } Dashboard</h1>
       </div>
       <form class="navbar-form">
-        <div class="input-group border">
+        <div class="input-group border mb-3 flex-nowrap">
           <AutoComplete />
+          <div class="input-group-append" >
           <label class="gramSelectLabel" for="gramSelect"> nGrams </label>
           <select class="gramSelect" bind:value={gramOptionsValue}>
             {#each gramOptions as go}
             <option value={go}>{go}</option>
             {/each}
           </select>
+          </div>
         </div>
       </form>
     </div>

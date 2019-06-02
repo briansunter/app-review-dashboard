@@ -27,7 +27,7 @@
        let formattedApps = appsResponse.results.map(a=> ({id: a.trackId, name:a.trackName, link: a.trackViewUrl, currentVersionRatingCount: a.userRatingCountForCurrentVersion, currentVersionRating: a.averageUserRatingForCurrentVersion, appRating: a.averageUserRating, appRatingCount: a.userRatingCount, appPrice:a.formattedPrice}));
        apps = mapValues(groupBy(formattedApps,'id'),x=>x[0]);
 
-       let labelApps = values(apps).map(a => ({value: a.id , label: a.name}));
+       let labelApps = values(apps).map(a => ({value: a.id , label: a.name, appRatingCount:a.appRatingCount}));
        update(labelApps);
      },
      onSelect: function(item) {
@@ -38,5 +38,16 @@
    });
  });
 </script>
+<style>
+
+ .autoComplete_results_list li {
+font-size: 2rem;
+ }
+ .appSearch {
+   width: 100%;
+   padding: 10pt;
+ }
+
+</style>
 
 <input id="appSearch" type="text" value="" class="appSearch" placeholder="Search for an App..." autocomplete="off">
