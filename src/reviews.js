@@ -16,7 +16,7 @@ const appWords = new Set([...stopFilter, "it","a","lot","of","i","used","tto","w
 async function getReviews({appId}) {
   var reviews = [];
 
-  const reviewsResponse = await Promise.all(range(1,10).map(page => fetch(`https://itunes.apple.com/us/rss/customerreviews/id=${appId}/sortBy=mostRecent/page=${page}/json`).then(async r=> await r.json())));
+  const reviewsResponse = await Promise.all(range(1,11).map(page => fetch(`https://itunes.apple.com/us/rss/customerreviews/id=${appId}/sortBy=mostRecent/page=${page}/json`).then(async r=> await r.json())));
   return reviewsResponse
     .filter(r => r.feed && r.feed.entry)
     .map(r=> r.feed.entry.map(r => ({rating:r["im:rating"].label, content:r.content.label, title:r.title.label,version:r["im:version"].label,sentiment:sentiment(r.title.label + r.content.label).score})))
