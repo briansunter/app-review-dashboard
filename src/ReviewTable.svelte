@@ -9,31 +9,37 @@
 
  onMount(async () => {
    const tableOptions = {
+     data:reviews,
      height:window.screen.height, tooltips: true,
      layout:"fitColumns",
      responsiveLayout:"collapse",
      columns:[
-       {title:"Title",width:150, formatter:'textarea'},
-       {title:"Rating",width:75,align:'center'},
-       {title:"Stars", field:"rating", formatter:"star", align:"center", width:100},
-       {title:"Sentiment",width:100, align:'center'},
-       {title:"Version",width:100, align:'center'},
-       {title:"Content", formatter:'textarea'}]}
+       {title:"Title",width:150, formatter:'textarea', field:'title'},
+       {title:"Rating",width:75,align:'center', field:'rating'},
+       {title:"Stars", field:"rating", formatter:"star", align:"center", width:100,field:'rating'},
+       {title:"Sentiment",width:100, align:'center',field: 'sentiment'},
+       {title:"Version",width:100, align:'center', field: 'version'},
+       {title:"Content", formatter:'textarea', field:'content'}]}
 
    table = new Tabulator("#items",tableOptions);
  });
 
  mark = new Mark("div.tabulator-cell");
 
+ $: if(table){
+   table.setData(reviews);
+ }
  $: if(table) {
    table.setFilter("content", "like", tableSearch);
+ }
 
+ $: {
    mark.mark(tableSearch,{accuracy: 'complementary'});
  }
 
-   export let reviews = [];
+ export let reviews = [];
 
-   let tableSearch = "";
+ let tableSearch = "";
 </script>
 
 <style>
@@ -60,34 +66,6 @@
           <div class="card-body">
             <div class="table-responsive">
               <table class="table sortable table-striped table-border" id="items">
-                <thead class=" text-primary">
-                  <th>Title</th><th>Rating</th><th>Stars</th><th>Sentiment</th><th>Version</th>
-                  <th>Content</th>
-                </thead>
-                <tbody>
-                  {#each reviews as review}
-                  <tr>
-                    <td>
-                      {review.title}
-                    </td>
-                    <td>
-                      {review.rating}
-                    </td>
-                    <td>
-                      {review.rating}
-                    </td>
-                    <td>
-                      {review.sentiment}
-                    </td>
-                    <td>
-                      {review.version}
-                    </td>
-                    <td class="text-primary review-content" tabulator-formatter="textarea">
-                      {review.content}
-                    </td>
-                  </tr>
-                  {/each}
-                </tbody>
               </table>
             </div>
           </div>
