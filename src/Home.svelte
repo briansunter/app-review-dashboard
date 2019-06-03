@@ -57,29 +57,32 @@
  }
 </style>
 
-<div class="container">
+<div class="container-fluid">
   <div class="row">
-    <div class="container-fluid">
-      <div class="navbar-wrapper">
-        {#await currentApp}
-        <p>Loading...</p>
-        {:then value}
-        <h1 class="display-2" href={value.appLink}>{ value.name } Dashboard</h1>
-        {/await}
-      </div>
-      <form class="navbar-form">
-        <div class="input-group border mb-3 flex-nowrap">
-          <AutoComplete />
-          <div class="input-group-append" >
-          <label class="gramSelectLabel" for="gramSelect"> nGrams </label>
-          <select class="gramSelect" bind:value={gramOptionsValue}>
-            {#each gramOptions as go}
-            <option value={go}>{go}</option>
-            {/each}
-          </select>
-          </div>
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header card-header-primary">
+          {#await currentApp}
+          <h2 class="card-title">Loading... </h2>
+          {:then value}
+          <h2 class="card-title">{ value.name }</h2>
+          {/await}
+          <h3 class="card-category">A dashboard for your iOS App Store reviews</h3>
         </div>
-      </form>
+        <form class="navbar-form">
+          <div class="input-group mb-3 flex-nowrap">
+            <AutoComplete />
+            <div class="input-group-append" >
+              <label class="gramSelectLabel" for="gramSelect"> nGrams </label>
+              <select class="gramSelect" bind:value={gramOptionsValue}>
+                {#each gramOptions as go}
+                <option value={go}>{go}</option>
+                {/each}
+              </select>
+            </div>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
   {#await Promise.all([currentApp,currentAppReviewsSentiment])}
@@ -98,7 +101,7 @@
         <div class="card">
           <div class="card-header card-header-primary">
             <h2 class="card-title">Word Cloud</h2>
-              <h3 class="card-category">A word cloud made from most frequent words in app reviews.</h3>
+            <h3 class="card-category">A word cloud made from most frequent words in app reviews.</h3>
           </div>
           <div class="card-body">
             {#await formattedReviews}
