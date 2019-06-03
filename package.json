@@ -40,10 +40,12 @@
     "d3-scale-chromatic": "^1.3.3",
     "d3-selection": "^1.4.0",
     "lodash": "^4.17.11",
+    "mark.js": "^8.11.1",
     "material-dashboard": "^2.1.0",
     "mimir": "0.0.1",
     "n-gram": "^1.1.1",
     "svelte-routing": "^1.2.0",
+    "tabulator-tables": "^4.2.7",
     "wink-sentiment": "^5.0.2"
   }
 }

@@ -4,6 +4,7 @@
  import WordCloud from './WordCloud.svelte';
  import AutoComplete from './AutoComplete.svelte';
  import Dashboard from './Dashboard.svelte';
+ import ReviewTable from './ReviewTable.svelte';
 
  import { getApp, getReviews, formatReviews, reviewsSentiment } from './reviews';
 
@@ -94,6 +95,16 @@
 </div>
 {:then value}
 <WordCloud words={value} />
+{:catch error}
+<p>Something went wrong: {error.message}</p>
+{/await}
+
+{#await appReviews}
+<div class="container">
+  <ReviewTable />
+</div>
+{:then reviews}
+<ReviewTable reviews={reviews} />
 {:catch error}
 <p>Something went wrong: {error.message}</p>
 {/await}
