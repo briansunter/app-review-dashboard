@@ -12,8 +12,8 @@
 
  export let words;
  let lastWords = words;
- export let width  = screenWidth;
- export let height = screenHeight;
+ export let width  = screenWidth * .9;
+ export let height = screenHeight * .9;
 
  onMount(async () => {
    calculateCloud(words);
@@ -61,5 +61,7 @@
      .on("end", drawCloud).start();
  }
 </script>
+<style>
+</style>
 
 <div id="cloud"> </div>

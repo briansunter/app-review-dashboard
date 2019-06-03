@@ -50,10 +50,11 @@
  .gramSelectLabel {
    padding: 5pt;
  }
- .card-stats {
-   height: 12vmax;
- }
 
+ .cloud {
+   min-height:90vh;
+   min-width:80vh;
+ }
 </style>
 
 <div class="container">
@@ -89,15 +90,34 @@
 
 </div>
 
-{#await formattedReviews}
-<div class="container">
-  <p>Loading Word Cloud...</p>
+
+<div class="content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card">
+          <div class="card-header card-header-primary">
+            <h2 class="card-title">Word Cloud</h2>
+              <h3 class="card-category">A word cloud made from most frequent words in app reviews.</h3>
+          </div>
+          <div class="card-body">
+            {#await formattedReviews}
+            <div class="container cloud">
+              <p>Loading Word Cloud...</p>
+            </div>
+            {:then value}
+            <WordCloud words={value} />
+            {:catch error}
+            <p>Something went wrong: {error.message}</p>
+            {/await}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-{:then value}
-<WordCloud words={value} />
-{:catch error}
-<p>Something went wrong: {error.message}</p>
-{/await}
+
+
 
 {#await appReviews}
 <div class="container">

@@ -11,6 +11,7 @@
    const tableOptions = {
      height:window.screen.height, tooltips: true,
      layout:"fitColumns",
+     responsiveLayout:"collapse",
      columns:[
        {title:"Title",width:150, formatter:'textarea'},
        {title:"Rating",width:75,align:'center'},
@@ -40,6 +41,11 @@
    background: orange;
    color: black;
  }
+ .review-search {
+   padding: 10pt;
+   font-size:1.5em;
+   margin: 5pt;
+ }
 </style>
 <div class="content">
   <div class="container-fluid">
@@ -47,9 +53,9 @@
       <div class="col-md-12">
         <div class="card">
           <div class="card-header card-header-primary">
-            <h4 class="card-title ">App Reviews</h4>
-            <p class="card-category"> Recent Reviews for your app</p>
-            <input bind:value={tableSearch} placeholder="Search Reviews..." >
+            <h2 class="card-title">List</h2>
+            <h3 class="card-category">Searchable and sortable reviews</h3>
+            <input class="review-search" bind:value={tableSearch} placeholder="Search Reviews..." >
           </div>
           <div class="card-body">
             <div class="table-responsive">

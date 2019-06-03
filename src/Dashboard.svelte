@@ -2,6 +2,11 @@
  export let currentApp;
  export let currentAppReviewsSentiment;
 </script>
+<style>
+ .card-stats {
+   height: 12vmax;
+ }
+</style>
 
 <div class="row">
   <div class="col-lg-3 col-md-6 col-sm-6">
