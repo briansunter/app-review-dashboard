@@ -33,7 +33,11 @@
  }
 
  $: {
-   mark.mark(tableSearch,{accuracy: 'complementary'});
+     if (tableSearch.length < 2) {
+         mark.unmark();
+     } else {
+         mark.mark(tableSearch,{accuracy: 'complementary'});
+     }
  }
 
  export let reviews = [];
