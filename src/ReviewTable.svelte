@@ -12,14 +12,13 @@
      data:reviews,
      height:window.screen.height, tooltips: true,
      layout:"fitColumns",
-     responsiveLayout:"collapse",
      columns:[
        {title:"Title",width:150, formatter:'textarea', field:'title'},
        {title:"Rating",width:75,align:'center', field:'rating'},
        {title:"Stars", field:"rating", formatter:"star", align:"center", width:100,field:'rating'},
        {title:"Sentiment",width:100, align:'center',field: 'sentiment'},
        {title:"Version",width:100, align:'center', field: 'version'},
-       {title:"Content", formatter:'textarea', field:'content'}]}
+       {title:"Content", formatter:'textarea', field:'content',minWidth:300}]}
 
    table = new Tabulator("#items",tableOptions);
  });
