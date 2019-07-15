@@ -35,7 +35,8 @@ export default {
       plugins:[
       production && purgecss({
         content: ["./**/*.html", "./**/*.svelte"],
-        css: ['public/vendor.css','public/bundle.css']
+        css: ['public/vendor.css','public/bundle.css'],
+        whitelistPatterns: [/^tabulator/]
       })]
     }),
     resolve(),
