@@ -19,7 +19,7 @@
        text = text.toLowerCase();
        let formattedText = encodeURI(text);
 
-       let res = await fetch(`https://itunes.apple.com/search?term=${formattedText}&entity=software`);
+       let res = await fetch(`https://cors-anywhere.herokuapp.com/https://itunes.apple.com/search?term=${formattedText}&entity=software`);
        let appsResponse = await res.json();
 
        let formattedApps = appsResponse.results.map(a=> ({id: a.trackId, name:a.trackName, link: a.trackViewUrl, currentVersionRatingCount: a.userRatingCountForCurrentVersion, currentVersionRating: a.averageUserRatingForCurrentVersion, appRating: a.averageUserRating, appRatingCount: a.userRatingCount, appPrice:a.formattedPrice}));
