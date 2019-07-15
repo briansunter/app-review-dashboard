@@ -7,6 +7,7 @@ import postcss from 'rollup-plugin-postcss';
 import serve from 'rollup-plugin-serve';
 const purgecss = require('@fullhuman/postcss-purgecss');
 const fontMagician = require('postcss-font-magician');
+import { terser } from "rollup-plugin-terser";
 
 const production = !process.env.ROLLUP_WATCH;
 function onwarn (warning, warn) {
@@ -54,6 +55,7 @@ export default {
     }),
     resolve(),
     commonjs(),
+    production && terser(),
 
     // !production && livereload('public'),
     !production && serve({contentBase:'public',   historyApiFallback: true,
