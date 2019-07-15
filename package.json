@@ -45,6 +45,7 @@
     "material-dashboard": "^2.1.0",
     "mimir": "0.0.1",
     "n-gram": "^1.1.1",
+    "postcss-font-magician": "^2.2.2",
     "svelte-routing": "^1.2.0",
     "tabulator-tables": "^4.2.7",
     "wink-sentiment": "^5.0.2"

@@ -10,6 +10,7 @@
 
  import 'material-dashboard/assets/css/material-dashboard.css';
  import 'material-dashboard/assets/css/bootstrap.min.css';
+ import './main.css';
 
  const defaultAppId = 284882215;
  export let appId = 284882215;

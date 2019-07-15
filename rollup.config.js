@@ -6,6 +6,7 @@ import postcss from 'rollup-plugin-postcss';
 // import visualizer from 'rollup-plugin-visualizer';
 import serve from 'rollup-plugin-serve';
 const purgecss = require('@fullhuman/postcss-purgecss');
+const fontMagician = require('postcss-font-magician');
 
 const production = !process.env.ROLLUP_WATCH;
 function onwarn (warning, warn) {
@@ -37,7 +38,19 @@ export default {
         content: ["./**/*.html", "./**/*.svelte"],
         css: ['public/vendor.css','public/bundle.css'],
         whitelistPatterns: [/^tabulator/]
-      })]
+      }),
+        fontMagician({
+          variants: {
+            'Roboto': {
+              '300': [],
+              '400': [],
+              '700': []
+            },
+          },
+
+          foundries: ['google']
+        })
+      ]
     }),
     resolve(),
     commonjs(),
