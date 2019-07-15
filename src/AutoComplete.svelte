@@ -49,4 +49,4 @@ font-size: 2rem;
 
 </style>
 
-<input id="appSearch" type="text" value="" class="appSearch" placeholder="Search for an App..." autocomplete="off">
+<input id="appSearch" type="text" value="" class="appSearch" placeholder="Search for an App..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
