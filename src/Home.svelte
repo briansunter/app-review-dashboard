@@ -91,14 +91,6 @@
         <form class="navbar-form">
           <div class="input-group mb-3 flex-nowrap">
             <AutoComplete />
-            <div class="input-group-append" >
-              <label class="gramSelectLabel" for="gramSelect"> nGrams </label>
-              <select class="gramSelect" bind:value={gramOptionsValue}>
-                {#each gramOptions as go}
-                <option value={go}>{go}</option>
-                {/each}
-              </select>
-            </div>
           </div>
         </form>
       </div>
@@ -119,6 +111,14 @@
           <div class="card-header card-header-primary">
             <h2 class="card-title">Word Cloud</h2>
             <h3 class="card-category">A word cloud made from most frequent words in app reviews.</h3>
+            <div class="input-group-append" >
+              <label class="gramSelectLabel" for="gramSelect"> nGrams </label>
+              <select class="gramSelect" bind:value={gramOptionsValue}>
+                {#each gramOptions as go}
+                <option value={go}>{go}</option>
+                {/each}
+              </select>
+            </div>
           </div>
           <div class="card-body">
             {#await formattedReviews}
