@@ -6,7 +6,6 @@
  import { onMount } from 'svelte';
  import 'autocompleter/autocomplete.css';
  import { navigate } from "svelte-routing";
- import {appCache} from './stores';
 
  let apps = {};
  export let selectedApp = () => null;
@@ -22,16 +21,25 @@
        let res = await fetch(`https://cors-anywhere.herokuapp.com/https://itunes.apple.com/search?term=${formattedText}&entity=software`);
        let appsResponse = await res.json();
 
-       let formattedApps = appsResponse.results.map(a=> ({id: a.trackId, name:a.trackName, link: a.trackViewUrl, currentVersionRatingCount: a.userRatingCountForCurrentVersion, currentVersionRating: a.averageUserRatingForCurrentVersion, appRating: a.averageUserRating, appRatingCount: a.userRatingCount, appPrice:a.formattedPrice}));
-       appCache.set({...$appCache , ...mapValues(groupBy(formattedApps,'id'),x=>x[0])});
-       let labelApps = values(formattedApps).map(a => ({value: a.id , label: a.name, appRatingCount:a.appRatingCount}));
+       let formattedApps = appsResponse.results.map(a=>
+           ({id: a.trackId,
+             name:a.trackName,
+             link: a.trackViewUrl,
+             currentVersionRatingCount: a.userRatingCountForCurrentVersion,
+             currentVersionRating: a.averageUserRatingForCurrentVersion,
+             appRating: a.averageUserRating,
+             appRatingCount: a.userRatingCount,
+             appPrice:a.formattedPrice}));
+
+       let labelApps = values(formattedApps).map(a =>
+           ({value: a.id,
+             label: a.name,
+             appRatingCount:a.appRatingCount}));
+
        update(labelApps);
      },
      onSelect: function(item) {
        input.value = item.label;
-       /* currentApp.set(apps[item.value]); */
-       /* console.log(item.label); */
-       /* let fullApp = $appCache[item.value]; */
        navigate(`${item.value}`);
      }
    });
